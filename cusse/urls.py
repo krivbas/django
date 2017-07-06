@@ -1,9 +1,8 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
-from blog.views import hello_page
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^home/', hello_page)
+    url(r'^blog/', include('blog.urls'))
 ]
