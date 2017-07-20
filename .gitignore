@@ -3,6 +3,7 @@
 
 # Python
 *.pyc
+local_settings.py
 
 # DB
 db.sqlite3

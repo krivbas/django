@@ -1,7 +1,10 @@
+from django.core.urlresolvers import reverse
+
 import os
 import uuid
 import random
 import string
+import urllib
 
 
 def get_file_path(instance, filename):
@@ -47,3 +50,14 @@ def gen_page_list(page_number, page_count):
 
 def random_word(length):
     return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
+
+
+def build_url(*args, **kwargs):
+    """
+    Reverse func with optional get params
+    """
+    get = kwargs.pop('get', {})
+    url = reverse(*args, **kwargs)
+    if get:
+        url += '?' + urllib.parse.urlencode(get)
+    return url

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '#wa@-@78lqv8-xy7c&dk@ql^@_5+&#w%dgwfhv9_yyl)tg4&z8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     # 3rd party apps
     'redactor',
     'solo',
+    'rest_framework',
+    'rest_framework_docs'
 ]
 
 MIDDLEWARE = [
@@ -145,3 +147,8 @@ REDACTOR_OPTIONS = {'lang': 'en'}
 REDACTOR_UPLOAD = 'uploads/'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass

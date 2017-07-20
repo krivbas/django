@@ -3,6 +3,11 @@
 {% block content %}
     <b>{{ user.email }} articles:</b> <br>
     {% for article in articles %}
+{#        id#}
+{#        title#}
+{#        body#}
+{#        image#}
+{#        author#}
         <a href="{% url 'single_article_page' article_id=article.id %}">{{ article.title }}</a> <br>
     {% endfor %}
 {% endblock content %}

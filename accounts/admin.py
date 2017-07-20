@@ -5,7 +5,8 @@ from accounts.models import User
 
 
 class CustomUserAdmin(UserAdmin):
-    search_fields = ("first_name", "last_name", "username", "email")
+    search_fields = ('first_name', 'last_name', 'username', 'email')
+    list_display = ('username', 'birthday')
     add_fieldsets = (
         (None, {
             'fields': ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')}
@@ -13,11 +14,11 @@ class CustomUserAdmin(UserAdmin):
     )
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'photo', 'birthday','country', 'city')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'photo', 'birthday', 'country', 'city')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-    list_filter = ( 'is_staff', 'is_superuser', 'is_active', )
+    list_filter = ('is_staff', 'is_superuser', 'is_active', )
 
 
 admin.site.register(User, CustomUserAdmin)

@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
 {% load humanize %}
-
 {% load color_article %}
+
 
 {% block content %}
     This page will show you all blogs on the website!
 
-    <form action="{% url 'all_articles' %}" method="POST">
+    <form action="{% url 'all_articles' %}" method="GET">
         {% csrf_token %}
         <div class="row">
             <div class="input-field col s6">
                 <input name="keyword" id="keyword" type="text" class="validate">
                 <label class="active" for="keyword">Search keyword</label>
-                <button class="waves-effect waves-light btn">Search!</button>
+                <button type="submit" class="waves-effect waves-light btn">Search!</button>
             </div>
         </div>
     </form>
@@ -27,10 +27,17 @@
                         <span class="card-title">{{ article.author.email }}: {{ article.title }}</span>
                     </div>
                     <div class="card-content">
-                        <p>{{ article.body }} | {{ article.added | naturalday }} | {{ 564546545654 | intword }}</p>
+                        <p>{{ article.body }} | {{ article.added | naturalday }} | {{ 561274862395 | intword }}</p>
                     </div>
                     <div class="card-action">
                         <a href="{% url 'single_article_page' article_id=article.id %}">Show more</a>
+                        <a href="{% url 'like_article' article_id=article.id %}?keyword={{ keyword }}?page={{ articles.number }}">
+                            {% if request.user in article.liked_by.all %}
+                                Dislike me {{ article.liked_by.all.count }}
+                            {% else %}
+                                Like me {{ article.liked_by.all.count }}
+                            {% endif %}
+                        </a>
                     </div>
                 </div>
             <p style="color: {{ article.title | color }};">{{ article.title }}</p>
@@ -50,6 +57,11 @@
                             <a href="?page={{ page }}">{{ page }}</a></li>
                         {% endif %}
                 {% endfor %}
+
+                {#                <li class="waves-effect"><a href="#!">2</a></li>#}
+                {#                <li class="waves-effect"><a href="#!">3</a></li>#}
+                {#                <li class="waves-effect"><a href="#!">4</a></li>#}
+                {#                <li class="waves-effect"><a href="#!">5</a></li>#}
 
                 {% if articles.has_next %}
                     <li class="waves-effect"><a href="?page={{ articles.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
