@@ -1,4 +1,6 @@
 from django.core.urlresolvers import reverse
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
 
 import os
 import uuid
@@ -61,3 +63,16 @@ def build_url(*args, **kwargs):
     if get:
         url += '?' + urllib.parse.urlencode(get)
     return url
+
+
+def send_email(subject, user, template, content):
+    ctx = {
+        'first_name': content.get('first_name'),
+        'last_name': content.get('last_name'),
+    }
+    from_email = "no-reply@klickjam.com"
+    reply_to = "qweqwe"
+    message = get_template(template).render(ctx)
+    msg = EmailMessage(subject, message, from_email=from_email, bcc=[user], reply_to=[reply_to])
+    msg.content_subtype = 'html'
+    msg.send()

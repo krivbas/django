@@ -3,6 +3,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -80,3 +82,22 @@ def change_user_password(request):
         return Response({'success': True})
     else:
         return Response(serializer.errors)
+
+
+class ChangeUserPasswordView(APIView):
+    serializer_class = UserChangePasswordSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context={'user': request.user})
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            request.user.set_password(validated_data.get('new_password'))
+            request.user.save()
+            return Response({'success': True})
+        else:
+            return Response(serializer.errors)
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

@@ -2,10 +2,17 @@ from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
+from django.http import Http404
+
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+from rest_framework.generics import ListAPIView, GenericAPIView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from blog.models import Article
+from blog.serializers import ArticleSerializer
 
-from utils import gen_page_list, build_url
+from utils import gen_page_list, build_url, send_email
 
 
 def blogs(request):
@@ -62,3 +69,39 @@ def like_article(request, article_id):
         article.liked_by.add(request.user)
     article.save()
     return HttpResponseRedirect(build_url('all_articles', get={'keyword': keyword, 'page': page}))
+
+
+@api_view(['GET'])
+def like_article_rest(request):
+    content = {
+        'first_name': 'John',
+        'last_name': 'Smith'
+    }
+    send_email('hello', 'antonboksha@gmail.com', 'hello-mail.html', content)
+    return Response({'success': True})
+
+
+# class ArticlesView(ListAPIView):
+#     queryset = Article.objects.all().order_by('id')
+#     serializer_class = ArticleSerializer
+#     pagination_class = PageNumberPagination
+
+
+class ArticlesView(GenericAPIView):
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        return Article.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        if kwargs.get('pk'):
+            article = self.get_object(pk=kwargs.get('pk'))
+            serializer = self.serializer_class(article)
+            return Response(serializer.data)
+        else:
+            return self.list(request)
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
